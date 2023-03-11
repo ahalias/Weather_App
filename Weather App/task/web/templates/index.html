@@ -29,7 +29,7 @@
     {% for city in cities %}
         <div class="card day">
             <div class="delete-wrapper">
-                <form action="/delete/{{ cities[city]['city'] }}" method="POST">
+                <form action="/delete/{{ cities[city]['id'] }}" method="POST">
                     <input type="hidden" name="id" value="">
                     <button class="delete-button" name="del" type="submit">&#10006;</button>
                 </form>
