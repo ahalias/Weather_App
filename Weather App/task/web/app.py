@@ -37,27 +37,35 @@ dict_with_weather_info = {}
 def get_id():
     return random.randrange(1000000)
 
+
+def api_fetch(city_query):
+    api_key = 'api'
+    req = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={city_query}&units=metric&appid={api_key}')
+    return req
+
+def process_cities(r, id):
+    dict_with_weather_info[id] = {
+        "city": r["name"], "degrees": int(r["main"]["temp"]), "state": r["weather"][0]['main'],
+        "id": id
+    }
+
 def render_cities():
     city_query = request.form['city_name']
-    api_key = 'api_key'
-    req = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={city_query}&units=metric&appid={api_key}')
-    r = req.json()
-    print(req.status_code)
+    req = api_fetch(city_query)
     if req.status_code == 404:
         flash("The city doesn't exist!")
     else:
-            if not session.query(City).filter(City.name == r["name"]).first():
-                city_id = get_id()
-                session.add(City(id=city_id, name=r["name"]))
-                session.commit()
-                dict_with_weather_info[city_id] = {
-                    "city": r["name"], "degrees": int(r["main"]["temp"]), "state": r["weather"][0]['main'],
-                    "id": city_id
+        r = req.json()
+        if session.query(City).filter(City.name == r["name"]).first():
+            flash('The city has already been added to the list!')
+        elif not session.query(City).filter(City.name == r["name"]).first():
+            city_id = get_id()
+            session.add(City(id=city_id, name=r["name"]))
+            session.commit()
+            dict_with_weather_info[city_id] = {
+                "city": r["name"], "degrees": int(r["main"]["temp"]), "state": r["weather"][0]['main'],
+                "id": city_id
                 }
-            elif session.query(City).filter_by(name=r["name"]).first():
-                flash('The city has already been added to the list!')
-
-
 
 
 
@@ -67,6 +75,11 @@ def index():
         render_cities()
         return render_template('index.html', cities=dict_with_weather_info)
     if request.method == "GET":
+        if  len(dict_with_weather_info) == 0:
+            for city, id in session.query(City.name, City.id).all():
+                req = api_fetch(city)
+                r = req.json()
+                process_cities(r, id)
         return render_template('index.html', cities=dict_with_weather_info)
 
 
