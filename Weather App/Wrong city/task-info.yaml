@@ -492,13 +492,10 @@ files:
 - name: weather.db
   visible: true
   learner_created: true
-- name: web/weather.db
-  visible: true
-  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/12329#comment
 status: Solved
 feedback:
   message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">JetBrains
     Academy</a> to continue learning.
-  time: "Tue, 14 Mar 2023 11:25:13 UTC"
+  time: "Tue, 14 Mar 2023 13:59:21 UTC"
 record: 4
