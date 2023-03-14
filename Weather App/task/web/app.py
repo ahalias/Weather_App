@@ -37,7 +37,7 @@ def get_id():
     return random.randrange(1000000)
 
 def api_fetch(city_query):
-    api_key = 'api'
+    api_key = '1e124edde75e0125e8273855822fb66c'
     req = requests.get(f'https://api.openweathermap.org/data/2.5/weather?q={city_query}&units=metric&appid={api_key}')
     return req
 
